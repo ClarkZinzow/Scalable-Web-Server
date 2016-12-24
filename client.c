@@ -7,18 +7,7 @@
  * Sends one HTTP request to the specified HTTP server.
  * Prints out the HTTP response.
  *
- * networks: For testing your server, you will want to modify this client.  
- * For example:
- * 
- * You may want to make this multi-threaded so that you can 
- * send many requests simultaneously to the server.
- *
- * You may also want to be able to request different URIs; 
- * you may want to get more URIs from the command line 
- * or read the list from a file. 
- *
- * When we test your server, we will be using modifications to this client.
- *
+ * This was made multi-threaded so that many requests can be sent simultaneously to the server.
  */
 
 #include "networks.h"

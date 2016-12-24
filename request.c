@@ -1,13 +1,15 @@
-//
-// request.c: Does the bulk of the work for the web server.
-// 
+/*
+ * request.c: Does the bulk of the work for the web server.
+ */
+ 
 
 #include "networks.h"
 #include "request.h"
 
-// requestError(      fd,    filename,        "404",    "Not found", "networks Server could not find this file");
-void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg) 
-{
+/*
+ * Request error processing function.
+ */
+void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longmsg) {
    char buf[MAXLINE], body[MAXBUF];
 
    // Create the body of the error message
@@ -37,11 +39,11 @@ void requestError(int fd, char *cause, char *errnum, char *shortmsg, char *longm
 }
 
 
-//
-// Reads and discards everything up to an empty text line
-//
-void requestReadhdrs(rio_t *rp)
-{
+/*
+ * Reads and discards everything up to an empty text line
+ */
+
+void requestReadhdrs(rio_t *rp) {
    char buf[MAXLINE];
 
    Rio_readlineb(rp, buf, MAXLINE);
@@ -51,12 +53,13 @@ void requestReadhdrs(rio_t *rp)
    return;
 }
 
-//
-// Return 1 if static, 0 if dynamic content
-// Calculates filename (and cgiargs, for dynamic) from uri
-//
-int requestParseURI(char *uri, char *filename, char *cgiargs) 
-{
+/*
+ * Calculates filename (and cgiargs, for dynamic) from uri.
+ *
+ * Return 1 if static, 0 if dynamic content.
+ */
+
+int requestParseURI(char *uri, char *filename, char *cgiargs) {
    char *ptr;
 
    if (!strstr(uri, "cgi")) {
@@ -81,11 +84,10 @@ int requestParseURI(char *uri, char *filename, char *cgiargs)
    }
 }
 
-//
-// Fills in the filetype given the filename
-//
-void requestGetFiletype(char *filename, char *filetype)
-{
+/*
+ * Fills in the filetype given the filename
+ */
+void requestGetFiletype(char *filename, char *filetype) {
    if (strstr(filename, ".html")) 
       strcpy(filetype, "text/html");
    else if (strstr(filename, ".gif")) 
@@ -96,8 +98,11 @@ void requestGetFiletype(char *filename, char *filetype)
       strcpy(filetype, "text/plain");
 }
 
-void requestServeDynamic(int fd, char *filename, char *cgiargs)
-{
+/*
+ * Request dynamic server.
+ */
+
+void requestServeDynamic(int fd, char *filename, char *cgiargs) {
    char buf[MAXLINE], *emptylist[] = {NULL};
 
    // The server does only a little bit of the header.  
@@ -117,9 +122,11 @@ void requestServeDynamic(int fd, char *filename, char *cgiargs)
    Wait(NULL);
 }
 
+/*
+ * Request static server.
+ */
 
-void requestServeStatic(int fd, char *filename, int filesize) 
-{
+void requestServeStatic(int fd, char *filename, int filesize) {
    int srcfd;
    char *srcp, filetype[MAXLINE], buf[MAXBUF];
 
@@ -146,9 +153,11 @@ void requestServeStatic(int fd, char *filename, int filesize)
 
 }
 
-// handle a request
-void requestHandle(int fd, thread *worker)
-{
+/*
+ * Handle a request.
+ */
+
+void requestHandle(int fd, thread *worker) {
 
    int is_static;
    struct stat sbuf;
@@ -190,6 +199,10 @@ void requestHandle(int fd, thread *worker)
       requestServeDynamic(fd, filename, cgiargs);
    }
 }
+
+/*
+ * Get request size.
+ */
 
 long requestFileSize(int fd) {
   char buf[MAXLINE], method[MAXLINE], uri[MAXLINE], version[MAXLINE];
